@@ -29,13 +29,20 @@ def loadbalancer():
             data = resp.json()
         except Exception as e:
             return render_template("index.html", error=f"Backend error: {e}")
-
+        server="no server"
+        if "https://l1-11.onrender.com/" == next_server:
+            server="server1"
+        if "https://l1-s2.onrender.com/" == next_server:
+            server="server2"
+        if "https://l1-s3.onrender.com/" == next_server:
+            server="server3"
         return render_template(
             "index.html",
             topic=data.get("topic"),
             summary=data.get("summary", []),
             urls_found=data.get("urls_found", []),
-            error=data.get("error")
+            error=data.get("error"),
+            server=server
         )
 
     return render_template("index.html")
