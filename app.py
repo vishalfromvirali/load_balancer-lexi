@@ -16,20 +16,20 @@ server_cycle = cycle(servers)
 @app.route('/', methods=['GET', 'POST'])
 def loadbalancer():
     next_server = next(server_cycle)
-
+    server="no server"
     if request.method == 'POST':
         topic = request.form.get('topic', '').strip()
 
         if not topic:
-            return render_template("index.html", error="Please enter a topic.")
+            return render_template("index.html", error="Please enter a topic.",server="loadbalancer server")
 
         # Send topic to backend
         try:
             resp = requests.post(next_server, data={"topic": topic})
             data = resp.json()
         except Exception as e:
-            return render_template("index.html", error=f"Backend error: {e}")
-        server="no server"
+            return render_template("index.html", error=f"Backend error: {e}",server=server)
+        
         if "https://l1-11.onrender.com/" == next_server:
             server="server1"
         if "https://l1-s2.onrender.com/" == next_server:
@@ -45,7 +45,7 @@ def loadbalancer():
             server=server
         )
 
-    return render_template("index.html")
+    return render_template("index.html",server="loadbalancer server")
     
 
 if __name__ == "__main__":
